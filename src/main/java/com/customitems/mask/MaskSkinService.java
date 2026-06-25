@@ -29,7 +29,16 @@ public final class MaskSkinService {
     }
 
     public void apply(Player player) {
-        if (!isActive() || originalProfiles.containsKey(player.getUniqueId())) {
+        debug("Skin apply starting for " + player.getName());
+        debug("Config skin value exists: " + config.hasMaskSkin());
+
+        if (!isActive()) {
+            debug("Skin spoofing inactive (change-tab-skin=" + config.isMaskChangeTabSkin()
+                    + ", hasValue=" + config.hasMaskSkin() + ")");
+            return;
+        }
+        if (originalProfiles.containsKey(player.getUniqueId())) {
+            debug("Profile already spoofed for " + player.getName() + ", skipping");
             return;
         }
 
@@ -38,6 +47,9 @@ public final class MaskSkinService {
         PlayerProfile masked = player.getPlayerProfile();
         masked.removeProperty(TEXTURES);
         masked.setProperty(new ProfileProperty(TEXTURES, config.getMaskSkinValue(), signatureOrNull()));
+
+        boolean propertySet = masked.hasProperty(TEXTURES);
+        debug("Texture property set on profile: " + propertySet);
 
         player.setPlayerProfile(masked);
         refresh(player, false);
@@ -51,6 +63,7 @@ public final class MaskSkinService {
 
         player.setPlayerProfile(original);
         refresh(player, false);
+        debug("Original profile restored for " + player.getName());
     }
 
     public void restoreImmediate(Player player) {
@@ -61,6 +74,17 @@ public final class MaskSkinService {
 
         player.setPlayerProfile(original);
         refresh(player, true);
+        debug("Original profile restored immediately for " + player.getName());
+    }
+
+    public boolean isSpoofed(Player player) {
+        return originalProfiles.containsKey(player.getUniqueId());
+    }
+
+    private void debug(String message) {
+        if (config.isDebug()) {
+            plugin.getLogger().info("[maskskin] " + message);
+        }
     }
 
     private String signatureOrNull() {
@@ -81,6 +105,7 @@ public final class MaskSkinService {
                     viewer.showPlayer(plugin, player);
                 }
             }
+            debug("Hide/show refresh ran for " + player.getName() + " (immediate=" + immediate + ")");
         };
 
         if (immediate) {

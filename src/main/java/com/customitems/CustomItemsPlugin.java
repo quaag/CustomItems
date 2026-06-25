@@ -39,7 +39,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
         MaskSkinService maskSkinService = new MaskSkinService(this, config);
         maskService = new MaskService(config, maskItem, maskSkinService);
 
-        CustomItemsCommand command = new CustomItemsCommand(this, config, registry);
+        CustomItemsCommand command = new CustomItemsCommand(this, config, registry, maskService, maskSkinService);
         Objects.requireNonNull(getCommand("customitems")).setExecutor(command);
         Objects.requireNonNull(getCommand("customitems")).setTabCompleter(command);
 

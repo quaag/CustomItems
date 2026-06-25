@@ -3,6 +3,8 @@ package com.customitems.command;
 import com.customitems.CustomItemsPlugin;
 import com.customitems.config.CustomItemsConfig;
 import com.customitems.item.CustomItemRegistry;
+import com.customitems.mask.MaskService;
+import com.customitems.mask.MaskSkinService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -23,11 +25,16 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
     private final CustomItemsPlugin plugin;
     private final CustomItemsConfig config;
     private final CustomItemRegistry registry;
+    private final MaskService maskService;
+    private final MaskSkinService maskSkinService;
 
-    public CustomItemsCommand(CustomItemsPlugin plugin, CustomItemsConfig config, CustomItemRegistry registry) {
+    public CustomItemsCommand(CustomItemsPlugin plugin, CustomItemsConfig config, CustomItemRegistry registry,
+                              MaskService maskService, MaskSkinService maskSkinService) {
         this.plugin = plugin;
         this.config = config;
         this.registry = registry;
+        this.maskService = maskService;
+        this.maskSkinService = maskSkinService;
     }
 
     @Override
@@ -42,6 +49,7 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             case "version" -> handleVersion(sender);
             case "give" -> handleGive(sender, args);
             case "reload" -> handleReload(sender);
+            case "maskskin" -> handleMaskSkin(sender, args);
             default -> sendUsage(sender);
         }
         return true;
@@ -102,19 +110,46 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(config.reloadedMessage());
     }
 
+    private void handleMaskSkin(CommandSender sender, String[] args) {
+        if (args.length < 2 || !args[1].equalsIgnoreCase("status")) {
+            sender.sendMessage(Component.text("Usage: /customitems maskskin status", NamedTextColor.RED));
+            return;
+        }
+
+        sender.sendMessage(Component.text("Mask skin status", NamedTextColor.GOLD));
+        sendStatusLine(sender, "change-tab-skin enabled", config.isMaskChangeTabSkin());
+        sendStatusLine(sender, "skin value present", config.hasMaskSkin());
+        sendStatusLine(sender, "skin spoofing active", maskSkinService.isActive());
+
+        if (sender instanceof Player player) {
+            sendStatusLine(sender, "you are masked", maskService.isMasked(player));
+            sendStatusLine(sender, "your profile is spoofed", maskSkinService.isSpoofed(player));
+        }
+    }
+
+    private void sendStatusLine(CommandSender sender, String label, boolean value) {
+        NamedTextColor color = value ? NamedTextColor.GREEN : NamedTextColor.RED;
+        sender.sendMessage(Component.text(label + ": ", NamedTextColor.GRAY)
+                .append(Component.text(value, color)));
+    }
+
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload>", NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload|maskskin>", NamedTextColor.YELLOW));
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command,
                                       @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            return filter(List.of("version", "give", "reload"), args[0]);
+            return filter(List.of("version", "give", "reload", "maskskin"), args[0]);
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
             return filter(registry.ids(), args[1]);
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("maskskin")) {
+            return filter(List.of("status"), args[1]);
         }
 
         if (args.length == 3 && args[0].equalsIgnoreCase("give")) {
