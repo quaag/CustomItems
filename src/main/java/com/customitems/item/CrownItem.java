@@ -5,9 +5,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
+import org.bukkit.inventory.meta.components.EquippableComponent;
 
 import java.util.List;
 
@@ -38,6 +40,11 @@ public final class CrownItem {
         CustomModelDataComponent modelData = meta.getCustomModelDataComponent();
         modelData.setFloats(List.of((float) config.getCrownCustomModelData()));
         meta.setCustomModelDataComponent(modelData);
+
+        EquippableComponent equippable = meta.getEquippable();
+        equippable.setSlot(EquipmentSlot.HEAD);
+        equippable.setModel(keys.equipmentAsset(ID));
+        meta.setEquippable(equippable);
 
         keys.writeId(meta, ID);
 

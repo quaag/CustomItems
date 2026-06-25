@@ -8,14 +8,20 @@ import org.bukkit.plugin.Plugin;
 
 public final class ItemKeys {
 
+    private final Plugin plugin;
     private final NamespacedKey customItemId;
 
     public ItemKeys(Plugin plugin) {
+        this.plugin = plugin;
         this.customItemId = new NamespacedKey(plugin, "custom_item_id");
     }
 
     public NamespacedKey customItemId() {
         return customItemId;
+    }
+
+    public NamespacedKey equipmentAsset(String id) {
+        return new NamespacedKey(plugin, id);
     }
 
     public void writeId(ItemMeta meta, String id) {

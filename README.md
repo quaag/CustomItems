@@ -34,9 +34,17 @@ A leather helmet variant identified by `custom_item_id = mask`, CustomModelData 
 - While worn it changes chat name, tab name and masks the killer name in death messages to "Masked Player"
 - The overhead nameplate cannot be rewritten to arbitrary text with vanilla Paper/Bukkit; the team option only hides it. True replacement needs ProtocolLib/NMS.
 
+### Worn rendering
+
+Worn appearance is driven by the item `equippable` component (`asset_id`), not CustomModelData. Both items set their equippable model to `customitems:crown` / `customitems:mask`, which the resource pack resolves to humanoid equipment layers. CustomModelData still drives the inventory/hand icon.
+
+### Masked tab skin
+
+`mask.change-tab-skin` spoofs the player profile texture via the Paper `PlayerProfile` API (no ProtocolLib required) and refreshes viewers with a brief hide/show. It activates only when `mask.skin.value` is set. Mojang clients only render skins hosted on their CDN, so the local PNG must first be uploaded to https://mineskin.org to obtain `value` (and optional `signature`); paste those into `config.yml`. The NameMC source skin is for private server use; licensing of third-party skins is not guaranteed for redistribution.
+
 ## Resource pack
 
-`resourcepack/CustomLegendaries` provides the CMD 1 / CMD 2 item models with placeholder textures. See the pack notes for the worn-appearance limitation.
+`resourcepack/CustomLegendaries` is the single combined pack: CMD 1/2 inventory models plus `equipment/` worn layers, with original CC0 placeholder textures.
 
 ## Commands
 

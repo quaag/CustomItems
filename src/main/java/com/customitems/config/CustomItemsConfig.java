@@ -23,7 +23,10 @@ public final class CustomItemsConfig {
     private boolean maskChangeTabName;
     private boolean maskChangeKillMessages;
     private boolean maskTryChangeNameplate;
+    private boolean maskChangeTabSkin;
     private boolean maskGlint;
+    private String maskSkinValue;
+    private String maskSkinSignature;
 
     private boolean debug;
 
@@ -56,7 +59,10 @@ public final class CustomItemsConfig {
         maskChangeTabName = config.getBoolean("mask.change-tab-name", true);
         maskChangeKillMessages = config.getBoolean("mask.change-kill-messages", true);
         maskTryChangeNameplate = config.getBoolean("mask.try-change-nameplate", true);
+        maskChangeTabSkin = config.getBoolean("mask.change-tab-skin", true);
         maskGlint = config.getBoolean("mask.glint", false);
+        maskSkinValue = config.getString("mask.skin.value", "");
+        maskSkinSignature = config.getString("mask.skin.signature", "");
 
         debug = config.getBoolean("debug", false);
 
@@ -118,8 +124,24 @@ public final class CustomItemsConfig {
         return maskTryChangeNameplate;
     }
 
+    public boolean isMaskChangeTabSkin() {
+        return maskChangeTabSkin;
+    }
+
     public boolean isMaskGlint() {
         return maskGlint;
+    }
+
+    public String getMaskSkinValue() {
+        return maskSkinValue;
+    }
+
+    public String getMaskSkinSignature() {
+        return maskSkinSignature;
+    }
+
+    public boolean hasMaskSkin() {
+        return maskSkinValue != null && !maskSkinValue.isEmpty();
     }
 
     public boolean isDebug() {

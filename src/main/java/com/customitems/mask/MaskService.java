@@ -17,11 +17,13 @@ public final class MaskService {
 
     private final CustomItemsConfig config;
     private final MaskItem maskItem;
+    private final MaskSkinService skinService;
     private final Set<UUID> maskedPlayers = new HashSet<>();
 
-    public MaskService(CustomItemsConfig config, MaskItem maskItem) {
+    public MaskService(CustomItemsConfig config, MaskItem maskItem, MaskSkinService skinService) {
         this.config = config;
         this.maskItem = maskItem;
+        this.skinService = skinService;
     }
 
     public boolean isMasked(Player player) {
@@ -49,10 +51,20 @@ public final class MaskService {
         player.displayName(null);
         player.playerListName(null);
         removeFromNameplateTeam(player);
+        skinService.restore(player);
 
         if (wasMasked && config.isDebug()) {
             player.getServer().getLogger().info("[CustomItems] Restored identity for " + player.getName());
         }
+    }
+
+    public void disable(Player player) {
+        maskedPlayers.remove(player.getUniqueId());
+
+        player.displayName(null);
+        player.playerListName(null);
+        removeFromNameplateTeam(player);
+        skinService.restoreImmediate(player);
     }
 
     private void apply(Player player) {
@@ -68,6 +80,7 @@ public final class MaskService {
         if (config.isMaskTryChangeNameplate()) {
             addToNameplateTeam(player);
         }
+        skinService.apply(player);
     }
 
     private void addToNameplateTeam(Player player) {

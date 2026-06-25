@@ -9,6 +9,7 @@ import com.customitems.item.ItemKeys;
 import com.customitems.item.MaskItem;
 import com.customitems.listener.EquipmentListener;
 import com.customitems.mask.MaskService;
+import com.customitems.mask.MaskSkinService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -35,7 +36,8 @@ public final class CustomItemsPlugin extends JavaPlugin {
         CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem);
 
         crownService = new CrownService(this, config, crownItem);
-        maskService = new MaskService(config, maskItem);
+        MaskSkinService maskSkinService = new MaskSkinService(this, config);
+        maskService = new MaskService(config, maskItem, maskSkinService);
 
         CustomItemsCommand command = new CustomItemsCommand(this, config, registry);
         Objects.requireNonNull(getCommand("customitems")).setExecutor(command);
@@ -59,7 +61,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
                 crownService.reset(player);
             }
             if (maskService != null) {
-                maskService.reset(player);
+                maskService.disable(player);
             }
         }
     }

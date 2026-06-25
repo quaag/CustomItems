@@ -14,7 +14,11 @@ mask:
   change-tab-name: true
   change-kill-messages: true
   try-change-nameplate: true
+  change-tab-skin: true
   glint: false
+  skin:
+    value: ""
+    signature: ""
 
 messages:
   no-permission: "&cYou do not have permission."
