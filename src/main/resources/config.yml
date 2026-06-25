@@ -1,0 +1,14 @@
+crown:
+  enabled: true
+  extra-hearts: 10
+  resistance: true
+  regeneration: true
+  custom-model-data: 1
+
+messages:
+  no-permission: "&cYou do not have permission."
+  given: "&aGave Crown to {player}."
+  received: "&aYou received the Crown."
+  reloaded: "&aCustomItems reloaded."
+
+debug: false

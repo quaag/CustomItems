@@ -1,0 +1,24 @@
+name: CustomItems
+version: '${version}'
+main: com.customitems.CustomItemsPlugin
+api-version: '1.21'
+author: quaag
+description: Custom items for Paper servers.
+commands:
+  customitems:
+    description: CustomItems administration commands.
+    usage: /customitems <version|give|reload>
+    aliases: [ci]
+permissions:
+  customitems.admin:
+    description: Grants access to all CustomItems commands.
+    default: op
+    children:
+      customitems.give: true
+      customitems.reload: true
+  customitems.give:
+    description: Allows giving custom items.
+    default: op
+  customitems.reload:
+    description: Allows reloading the CustomItems configuration.
+    default: op
