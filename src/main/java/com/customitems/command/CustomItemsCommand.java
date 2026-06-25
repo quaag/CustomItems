@@ -2,7 +2,7 @@ package com.customitems.command;
 
 import com.customitems.CustomItemsPlugin;
 import com.customitems.config.CustomItemsConfig;
-import com.customitems.item.CrownItem;
+import com.customitems.item.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -22,12 +22,12 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
 
     private final CustomItemsPlugin plugin;
     private final CustomItemsConfig config;
-    private final CrownItem crownItem;
+    private final CustomItemRegistry registry;
 
-    public CustomItemsCommand(CustomItemsPlugin plugin, CustomItemsConfig config, CrownItem crownItem) {
+    public CustomItemsCommand(CustomItemsPlugin plugin, CustomItemsConfig config, CustomItemRegistry registry) {
         this.plugin = plugin;
         this.config = config;
-        this.crownItem = crownItem;
+        this.registry = registry;
     }
 
     @Override
@@ -38,8 +38,7 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String sub = args[0].toLowerCase();
-        switch (sub) {
+        switch (args[0].toLowerCase()) {
             case "version" -> handleVersion(sender);
             case "give" -> handleGive(sender, args);
             case "reload" -> handleReload(sender);
@@ -58,8 +57,15 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        if (args.length < 2 || !CrownItem.CROWN_ID.equalsIgnoreCase(args[1])) {
-            sender.sendMessage(Component.text("Usage: /customitems give crown [player]", NamedTextColor.RED));
+        if (args.length < 2) {
+            sender.sendMessage(Component.text("Usage: /customitems give <" + String.join("|", registry.ids()) + "> [player]", NamedTextColor.RED));
+            return;
+        }
+
+        String itemId = args[1].toLowerCase();
+        ItemStack item = registry.create(itemId);
+        if (item == null) {
+            sender.sendMessage(Component.text("Unknown item: " + args[1], NamedTextColor.RED));
             return;
         }
 
@@ -77,12 +83,12 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        ItemStack crown = crownItem.create();
-        target.getInventory().addItem(crown);
-        target.sendMessage(config.receivedMessage());
+        String itemName = registry.displayName(itemId);
+        target.getInventory().addItem(item);
+        target.sendMessage(config.receivedMessage(itemName));
 
         if (!sender.equals(target)) {
-            sender.sendMessage(config.givenMessage(target.getName()));
+            sender.sendMessage(config.givenMessage(itemName, target.getName()));
         }
     }
 
@@ -108,7 +114,7 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
-            return filter(List.of(CrownItem.CROWN_ID), args[1]);
+            return filter(registry.ids(), args[1]);
         }
 
         if (args.length == 3 && args[0].equalsIgnoreCase("give")) {

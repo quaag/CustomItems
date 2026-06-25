@@ -50,7 +50,7 @@ public final class CrownService {
             return;
         }
 
-        double extraHealth = config.getExtraHealth();
+        double extraHealth = config.getCrownExtraHealth();
         AttributeModifier existing = findModifier(attribute);
 
         if (existing != null) {
@@ -108,11 +108,11 @@ public final class CrownService {
     }
 
     private void applyEffects(Player player) {
-        if (config.isResistance()) {
+        if (config.isCrownResistance()) {
             player.addPotionEffect(new PotionEffect(
                     PotionEffectType.RESISTANCE, EFFECT_DURATION_TICKS, EFFECT_AMPLIFIER, true, false, true));
         }
-        if (config.isRegeneration()) {
+        if (config.isCrownRegeneration()) {
             player.addPotionEffect(new PotionEffect(
                     PotionEffectType.REGENERATION, EFFECT_DURATION_TICKS, EFFECT_AMPLIFIER, true, false, true));
         }

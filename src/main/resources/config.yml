@@ -4,11 +4,22 @@ crown:
   resistance: true
   regeneration: true
   custom-model-data: 1
+  diamond-helmet-stats: true
+
+mask:
+  enabled: true
+  custom-model-data: 2
+  masked-name: "Masked Player"
+  change-chat-name: true
+  change-tab-name: true
+  change-kill-messages: true
+  try-change-nameplate: true
+  glint: false
 
 messages:
   no-permission: "&cYou do not have permission."
-  given: "&aGave Crown to {player}."
-  received: "&aYou received the Crown."
+  given: "&aGave {item} to {player}."
+  received: "&aYou received {item}."
   reloaded: "&aCustomItems reloaded."
 
 debug: false

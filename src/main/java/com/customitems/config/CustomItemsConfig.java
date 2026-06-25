@@ -10,10 +10,21 @@ public final class CustomItemsConfig {
     private final CustomItemsPlugin plugin;
 
     private boolean crownEnabled;
-    private int extraHearts;
-    private boolean resistance;
-    private boolean regeneration;
-    private int customModelData;
+    private int crownExtraHearts;
+    private boolean crownResistance;
+    private boolean crownRegeneration;
+    private int crownCustomModelData;
+    private boolean crownDiamondHelmetStats;
+
+    private boolean maskEnabled;
+    private int maskCustomModelData;
+    private String maskedName;
+    private boolean maskChangeChatName;
+    private boolean maskChangeTabName;
+    private boolean maskChangeKillMessages;
+    private boolean maskTryChangeNameplate;
+    private boolean maskGlint;
+
     private boolean debug;
 
     private String noPermission;
@@ -32,15 +43,26 @@ public final class CustomItemsConfig {
         FileConfiguration config = plugin.getConfig();
 
         crownEnabled = config.getBoolean("crown.enabled", true);
-        extraHearts = Math.max(0, config.getInt("crown.extra-hearts", 10));
-        resistance = config.getBoolean("crown.resistance", true);
-        regeneration = config.getBoolean("crown.regeneration", true);
-        customModelData = config.getInt("crown.custom-model-data", 1);
+        crownExtraHearts = Math.max(0, config.getInt("crown.extra-hearts", 10));
+        crownResistance = config.getBoolean("crown.resistance", true);
+        crownRegeneration = config.getBoolean("crown.regeneration", true);
+        crownCustomModelData = config.getInt("crown.custom-model-data", 1);
+        crownDiamondHelmetStats = config.getBoolean("crown.diamond-helmet-stats", true);
+
+        maskEnabled = config.getBoolean("mask.enabled", true);
+        maskCustomModelData = config.getInt("mask.custom-model-data", 2);
+        maskedName = config.getString("mask.masked-name", "Masked Player");
+        maskChangeChatName = config.getBoolean("mask.change-chat-name", true);
+        maskChangeTabName = config.getBoolean("mask.change-tab-name", true);
+        maskChangeKillMessages = config.getBoolean("mask.change-kill-messages", true);
+        maskTryChangeNameplate = config.getBoolean("mask.try-change-nameplate", true);
+        maskGlint = config.getBoolean("mask.glint", false);
+
         debug = config.getBoolean("debug", false);
 
         noPermission = config.getString("messages.no-permission", "&cYou do not have permission.");
-        given = config.getString("messages.given", "&aGave Crown to {player}.");
-        received = config.getString("messages.received", "&aYou received the Crown.");
+        given = config.getString("messages.given", "&aGave {item} to {player}.");
+        received = config.getString("messages.received", "&aYou received {item}.");
         reloaded = config.getString("messages.reloaded", "&aCustomItems reloaded.");
     }
 
@@ -48,24 +70,56 @@ public final class CustomItemsConfig {
         return crownEnabled;
     }
 
-    public int getExtraHearts() {
-        return extraHearts;
+    public double getCrownExtraHealth() {
+        return crownExtraHearts * 2.0D;
     }
 
-    public double getExtraHealth() {
-        return extraHearts * 2.0D;
+    public boolean isCrownResistance() {
+        return crownResistance;
     }
 
-    public boolean isResistance() {
-        return resistance;
+    public boolean isCrownRegeneration() {
+        return crownRegeneration;
     }
 
-    public boolean isRegeneration() {
-        return regeneration;
+    public int getCrownCustomModelData() {
+        return crownCustomModelData;
     }
 
-    public int getCustomModelData() {
-        return customModelData;
+    public boolean isCrownDiamondHelmetStats() {
+        return crownDiamondHelmetStats;
+    }
+
+    public boolean isMaskEnabled() {
+        return maskEnabled;
+    }
+
+    public int getMaskCustomModelData() {
+        return maskCustomModelData;
+    }
+
+    public String getMaskedName() {
+        return maskedName;
+    }
+
+    public boolean isMaskChangeChatName() {
+        return maskChangeChatName;
+    }
+
+    public boolean isMaskChangeTabName() {
+        return maskChangeTabName;
+    }
+
+    public boolean isMaskChangeKillMessages() {
+        return maskChangeKillMessages;
+    }
+
+    public boolean isMaskTryChangeNameplate() {
+        return maskTryChangeNameplate;
+    }
+
+    public boolean isMaskGlint() {
+        return maskGlint;
     }
 
     public boolean isDebug() {
@@ -76,12 +130,12 @@ public final class CustomItemsConfig {
         return color(noPermission);
     }
 
-    public Component givenMessage(String playerName) {
-        return color(given.replace("{player}", playerName));
+    public Component givenMessage(String itemName, String playerName) {
+        return color(given.replace("{item}", itemName).replace("{player}", playerName));
     }
 
-    public Component receivedMessage() {
-        return color(received);
+    public Component receivedMessage(String itemName) {
+        return color(received.replace("{item}", itemName));
     }
 
     public Component reloadedMessage() {

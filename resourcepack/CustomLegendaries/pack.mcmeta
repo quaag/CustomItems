@@ -1,0 +1,7 @@
+{
+  "pack": {
+    "pack_format": 64,
+    "supported_formats": { "min_inclusive": 46, "max_inclusive": 99 },
+    "description": "CustomItems Legendaries - Crown (CMD 1) and Mask (CMD 2)"
+  }
+}

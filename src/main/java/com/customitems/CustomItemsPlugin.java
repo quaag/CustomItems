@@ -4,7 +4,11 @@ import com.customitems.command.CustomItemsCommand;
 import com.customitems.config.CustomItemsConfig;
 import com.customitems.crown.CrownService;
 import com.customitems.item.CrownItem;
-import com.customitems.listener.CrownListener;
+import com.customitems.item.CustomItemRegistry;
+import com.customitems.item.ItemKeys;
+import com.customitems.item.MaskItem;
+import com.customitems.listener.EquipmentListener;
+import com.customitems.mask.MaskService;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -16,8 +20,8 @@ public final class CustomItemsPlugin extends JavaPlugin {
     private static final long SYNC_PERIOD_TICKS = 100L;
 
     private CustomItemsConfig config;
-    private CrownItem crownItem;
     private CrownService crownService;
+    private MaskService maskService;
     private BukkitTask syncTask;
 
     @Override
@@ -25,14 +29,20 @@ public final class CustomItemsPlugin extends JavaPlugin {
         config = new CustomItemsConfig(this);
         config.load();
 
-        crownItem = new CrownItem(this, config);
-        crownService = new CrownService(this, config, crownItem);
+        ItemKeys keys = new ItemKeys(this);
+        CrownItem crownItem = new CrownItem(config, keys);
+        MaskItem maskItem = new MaskItem(config, keys);
+        CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem);
 
-        CustomItemsCommand command = new CustomItemsCommand(this, config, crownItem);
+        crownService = new CrownService(this, config, crownItem);
+        maskService = new MaskService(config, maskItem);
+
+        CustomItemsCommand command = new CustomItemsCommand(this, config, registry);
         Objects.requireNonNull(getCommand("customitems")).setExecutor(command);
         Objects.requireNonNull(getCommand("customitems")).setTabCompleter(command);
 
-        getServer().getPluginManager().registerEvents(new CrownListener(this, crownService), this);
+        getServer().getPluginManager().registerEvents(
+                new EquipmentListener(this, crownService, maskService), this);
 
         startSyncTask();
     }
@@ -44,9 +54,12 @@ public final class CustomItemsPlugin extends JavaPlugin {
             syncTask = null;
         }
 
-        if (crownService != null) {
-            for (Player player : getServer().getOnlinePlayers()) {
+        for (Player player : getServer().getOnlinePlayers()) {
+            if (crownService != null) {
                 crownService.reset(player);
+            }
+            if (maskService != null) {
+                maskService.reset(player);
             }
         }
     }
@@ -55,7 +68,9 @@ public final class CustomItemsPlugin extends JavaPlugin {
         config.load();
         for (Player player : getServer().getOnlinePlayers()) {
             crownService.reset(player);
+            maskService.reset(player);
             crownService.sync(player);
+            maskService.sync(player);
         }
     }
 
@@ -63,6 +78,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
         syncTask = getServer().getScheduler().runTaskTimer(this, () -> {
             for (Player player : getServer().getOnlinePlayers()) {
                 crownService.sync(player);
+                maskService.sync(player);
             }
         }, SYNC_PERIOD_TICKS, SYNC_PERIOD_TICKS);
     }
