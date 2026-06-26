@@ -22,7 +22,7 @@ public final class CustomItemsConfig {
     private boolean maskChangeChatName;
     private boolean maskChangeTabName;
     private boolean maskChangeKillMessages;
-    private boolean maskTryChangeNameplate;
+    private boolean maskHideNameplate;
     private boolean maskChangeTabSkin;
     private boolean maskGlint;
     private String maskSkinValue;
@@ -56,10 +56,10 @@ public final class CustomItemsConfig {
         maskCustomModelData = config.getInt("mask.custom-model-data", 2);
         maskedName = config.getString("mask.masked-name", "Masked Player");
         maskChangeChatName = config.getBoolean("mask.change-chat-name", true);
-        maskChangeTabName = config.getBoolean("mask.change-tab-name", true);
+        maskChangeTabName = config.getBoolean("mask.change-tab-name", false);
         maskChangeKillMessages = config.getBoolean("mask.change-kill-messages", true);
-        maskTryChangeNameplate = config.getBoolean("mask.try-change-nameplate", true);
-        maskChangeTabSkin = config.getBoolean("mask.change-tab-skin", true);
+        maskHideNameplate = config.getBoolean("mask.hide-nameplate", true);
+        maskChangeTabSkin = config.getBoolean("mask.change-tab-skin", false);
         maskGlint = config.getBoolean("mask.glint", false);
         maskSkinValue = config.getString("mask.skin.value", "");
         maskSkinSignature = config.getString("mask.skin.signature", "");
@@ -120,8 +120,8 @@ public final class CustomItemsConfig {
         return maskChangeKillMessages;
     }
 
-    public boolean isMaskTryChangeNameplate() {
-        return maskTryChangeNameplate;
+    public boolean isMaskHideNameplate() {
+        return maskHideNameplate;
     }
 
     public boolean isMaskChangeTabSkin() {

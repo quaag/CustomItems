@@ -77,6 +77,10 @@ public final class EquipmentListener implements Listener {
     }
 
     private void maskKillerInDeathMessage(PlayerDeathEvent event) {
+        if (!maskService.changeKillMessages()) {
+            return;
+        }
+
         Player killer = event.getEntity().getKiller();
         if (killer == null || killer.equals(event.getEntity())) {
             return;

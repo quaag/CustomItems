@@ -11,14 +11,14 @@ mask:
   custom-model-data: 2
   masked-name: "Masked Player"
   change-chat-name: true
-  change-tab-name: true
+  change-tab-name: false
   change-kill-messages: true
-  try-change-nameplate: true
-  change-tab-skin: true
+  hide-nameplate: true
+  change-tab-skin: false
   glint: false
   skin:
-    value: "ewogICJ0aW1lc3RhbXAiIDogMTY1NDk4MjEwNDgxMiwKICAicHJvZmlsZUlkIiA6ICI5ZWU3NTUxOGQyZWE0Y2Q4OGJiNGI1YTZkNmVhNTFjYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJNaWNyb3MxMTgyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I4ZGE1MDU4NTRjZjcxYzE3YWJhYjJhYWY2YmE2NGM3MjZjZTBhMDJlODY0MGJjYzk2YjJmM2IwYjZhODMwZGEiCiAgICB9CiAgfQp9"
-    signature: "aZ9qKnyw0AUEqsf55iHwA8ESFknJKKK6kG6a67gshxVBfKT57JUcnbU1l0K7BSBBgRtseDbH23KXHKrUIi7kY5k7rMI5016HwlNSRrk+8WHZeLsrCxl8zSBuMR9qaxDyXA3pRF3ZD5Z7IT3f8vQgO1vRbaxd3iU5m3/8TEUc8Dz61/5DIpEvhPkHbv1fzLiUWTCZTiZ8wXQd86HPmGoalVseeh58P+XfUzVTJMRdTCpDpbA+BjqS8clNu+QxcGJU8etxz21V+UVvT6FEWivgTRtI7d/RvU34awLucd6E2IKkjdZMMorfEtTkgL4XebBw3Eobs315UBsz9OnqYbuiM4PU4ZWAMLe9TrNJCYfEKp+0ehrSkSSP5Nn/opVQco3qInp2slPkvU0CQL0AeT90SjyPKd97bjHF222fqnTRFtcY7onQZWbDrlPkGdj4h3xbOuGCgCfZaIy0YXQFipfRjdsP85FLiBdaVNC/IERrBzBcvhZKWHz5b5R4cDUExxbNfcs0HwUXykS13nWDPhJoIbGMDF2j0T4s/5QPl45SSAxh9AaR0u94AOJRDC5LX73/Y6xJi7/TJv8yS0ogS7VZHWKncnl695c0bZYfXSkcPQVQkjsyJBQ0Ew4WSDlqM/TAOoQHY9mU3Nap0D4rs00Fyz/gBJ99cRheop3VXXlNmwE="
+    value: ""
+    signature: ""
 
 messages:
   no-permission: "&cYou do not have permission."

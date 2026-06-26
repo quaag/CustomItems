@@ -116,13 +116,15 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        sender.sendMessage(Component.text("Mask skin status", NamedTextColor.GOLD));
-        sendStatusLine(sender, "change-tab-skin enabled", config.isMaskChangeTabSkin());
-        sendStatusLine(sender, "skin value present", config.hasMaskSkin());
-        sendStatusLine(sender, "skin spoofing active", maskSkinService.isActive());
+        sender.sendMessage(Component.text("Mask status", NamedTextColor.GOLD));
+        sendStatusLine(sender, "tab name changing enabled", config.isMaskChangeTabName());
+        sendStatusLine(sender, "tab skin spoofing enabled", config.isMaskChangeTabSkin());
+        sendStatusLine(sender, "tab skin spoofing active", maskSkinService.isActive());
+        sendStatusLine(sender, "nameplate hiding enabled", config.isMaskHideNameplate());
 
         if (sender instanceof Player player) {
             sendStatusLine(sender, "you are masked", maskService.isMasked(player));
+            sendStatusLine(sender, "your nameplate hidden", maskService.isNameplateHidden(player));
             sendStatusLine(sender, "your profile is spoofed", maskSkinService.isSpoofed(player));
         }
     }
