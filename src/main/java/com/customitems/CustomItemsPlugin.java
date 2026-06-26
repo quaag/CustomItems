@@ -7,6 +7,7 @@ import com.customitems.item.CrownItem;
 import com.customitems.item.CustomItemRegistry;
 import com.customitems.item.ItemKeys;
 import com.customitems.item.MaskItem;
+import com.customitems.item.SigningBookItem;
 import com.customitems.listener.EquipmentListener;
 import com.customitems.mask.MaskService;
 import com.customitems.mask.MaskSkinService;
@@ -33,7 +34,8 @@ public final class CustomItemsPlugin extends JavaPlugin {
         ItemKeys keys = new ItemKeys(this);
         CrownItem crownItem = new CrownItem(config, keys);
         MaskItem maskItem = new MaskItem(config, keys);
-        CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem);
+        SigningBookItem signingBookItem = new SigningBookItem(keys);
+        CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem, signingBookItem);
 
         crownService = new CrownService(this, config, crownItem);
         MaskSkinService maskSkinService = new MaskSkinService(this, config);

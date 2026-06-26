@@ -12,11 +12,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,6 +53,7 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             case "give" -> handleGive(sender, args);
             case "reload" -> handleReload(sender);
             case "maskskin" -> handleMaskSkin(sender, args);
+            case "signbook" -> handleSignBook(sender, args);
             default -> sendUsage(sender);
         }
         return true;
@@ -135,15 +139,57 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
                 .append(Component.text(value, color)));
     }
 
+    private void handleSignBook(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("Only a player can sign a book.", NamedTextColor.RED));
+            return;
+        }
+        if (!player.hasPermission("customitems.signbook")) {
+            player.sendMessage(config.noPermissionMessage());
+            return;
+        }
+        if (args.length < 2) {
+            player.sendMessage(Component.text("Usage: /customitems signbook <author>", NamedTextColor.RED));
+            return;
+        }
+
+        String author = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).trim();
+        if (author.isEmpty()) {
+            player.sendMessage(Component.text("Author name cannot be empty.", NamedTextColor.RED));
+            return;
+        }
+        if (author.length() > 32) {
+            player.sendMessage(Component.text("Author name cannot be longer than 32 characters.", NamedTextColor.RED));
+            return;
+        }
+
+        ItemStack held = player.getInventory().getItemInMainHand();
+        if (!registry.signingBook().isSigningBook(held)) {
+            player.sendMessage(Component.text("You must be holding a CustomSigningBook.", NamedTextColor.RED));
+            return;
+        }
+
+        BookMeta source = (BookMeta) held.getItemMeta();
+        ItemStack written = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta target = (BookMeta) written.getItemMeta();
+        target.pages(source.pages());
+        target.author(Component.text(author));
+        target.title(source.hasTitle() ? source.title() : Component.text("Custom Signed Book"));
+        written.setItemMeta(target);
+
+        player.getInventory().setItemInMainHand(written);
+        player.sendMessage(Component.text("Signed book as " + author + ".", NamedTextColor.GREEN));
+    }
+
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload|maskskin>", NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload|maskskin|signbook>", NamedTextColor.YELLOW));
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command,
                                       @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            return filter(List.of("version", "give", "reload", "maskskin"), args[0]);
+            return filter(List.of("version", "give", "reload", "maskskin", "signbook"), args[0]);
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("give")) {

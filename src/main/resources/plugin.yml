@@ -7,7 +7,7 @@ description: Custom items for Paper servers.
 commands:
   customitems:
     description: CustomItems administration commands.
-    usage: /customitems <version|give|reload>
+    usage: /customitems <version|give|reload|maskskin|signbook>
     aliases: [ci]
 permissions:
   customitems.admin:
@@ -16,9 +16,13 @@ permissions:
     children:
       customitems.give: true
       customitems.reload: true
+      customitems.signbook: true
   customitems.give:
     description: Allows giving custom items.
     default: op
   customitems.reload:
     description: Allows reloading the CustomItems configuration.
+    default: op
+  customitems.signbook:
+    description: Allows signing a CustomSigningBook with a custom author.
     default: op
