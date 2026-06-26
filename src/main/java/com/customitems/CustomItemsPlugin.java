@@ -8,9 +8,14 @@ import com.customitems.item.CustomItemRegistry;
 import com.customitems.item.ItemKeys;
 import com.customitems.item.MaskItem;
 import com.customitems.item.SigningBookItem;
+import com.customitems.item.SpawnerItem;
 import com.customitems.listener.EquipmentListener;
 import com.customitems.mask.MaskService;
 import com.customitems.mask.MaskSkinService;
+import com.customitems.spawner.SpawnerCommands;
+import com.customitems.spawner.SpawnerListener;
+import com.customitems.spawner.SpawnerManager;
+import com.customitems.spawner.SpawnerStore;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -24,6 +29,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
     private CustomItemsConfig config;
     private CrownService crownService;
     private MaskService maskService;
+    private SpawnerManager spawnerManager;
     private BukkitTask syncTask;
 
     @Override
@@ -35,18 +41,25 @@ public final class CustomItemsPlugin extends JavaPlugin {
         CrownItem crownItem = new CrownItem(config, keys);
         MaskItem maskItem = new MaskItem(config, keys);
         SigningBookItem signingBookItem = new SigningBookItem(keys);
-        CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem, signingBookItem);
+        SpawnerItem spawnerItem = new SpawnerItem(keys);
+        CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem, signingBookItem, spawnerItem);
 
         crownService = new CrownService(this, config, crownItem);
         MaskSkinService maskSkinService = new MaskSkinService(this, config);
         maskService = new MaskService(config, maskItem, maskSkinService);
 
-        CustomItemsCommand command = new CustomItemsCommand(this, config, registry, maskService, maskSkinService);
+        spawnerManager = new SpawnerManager(this, config, new SpawnerStore(this));
+        spawnerManager.start();
+        SpawnerCommands spawnerCommands = new SpawnerCommands(this, config, spawnerManager);
+
+        CustomItemsCommand command = new CustomItemsCommand(this, config, registry, maskService, maskSkinService, spawnerCommands);
         Objects.requireNonNull(getCommand("customitems")).setExecutor(command);
         Objects.requireNonNull(getCommand("customitems")).setTabCompleter(command);
 
         getServer().getPluginManager().registerEvents(
                 new EquipmentListener(this, crownService, maskService), this);
+        getServer().getPluginManager().registerEvents(
+                new SpawnerListener(spawnerItem, spawnerManager, keys), this);
 
         startSyncTask();
     }
@@ -66,10 +79,17 @@ public final class CustomItemsPlugin extends JavaPlugin {
                 maskService.disable(player);
             }
         }
+
+        if (spawnerManager != null) {
+            spawnerManager.shutdown();
+        }
     }
 
     public void reloadEverything() {
         config.load();
+        if (spawnerManager != null) {
+            spawnerManager.reload();
+        }
         for (Player player : getServer().getOnlinePlayers()) {
             crownService.reset(player);
             maskService.reset(player);

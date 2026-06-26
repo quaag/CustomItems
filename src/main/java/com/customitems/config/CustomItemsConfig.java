@@ -28,6 +28,16 @@ public final class CustomItemsConfig {
     private String maskSkinValue;
     private String maskSkinSignature;
 
+    private boolean spawnerEnabled;
+    private String spawnerMobType;
+    private String spawnerRateMode;
+    private int spawnerRateSlow;
+    private int spawnerRateMedium;
+    private int spawnerRateFast;
+    private int spawnerSpawnCount;
+    private int spawnerMaxNearbyMobs;
+    private int spawnerSpawnRange;
+
     private boolean debug;
 
     private String noPermission;
@@ -63,6 +73,16 @@ public final class CustomItemsConfig {
         maskGlint = config.getBoolean("mask.glint", false);
         maskSkinValue = config.getString("mask.skin.value", "");
         maskSkinSignature = config.getString("mask.skin.signature", "");
+
+        spawnerEnabled = config.getBoolean("custom-mob-spawner.enabled", true);
+        spawnerMobType = config.getString("custom-mob-spawner.mob-type", "ZOMBIE");
+        spawnerRateMode = config.getString("custom-mob-spawner.rate", "medium");
+        spawnerRateSlow = config.getInt("custom-mob-spawner.rates.slow", 15);
+        spawnerRateMedium = config.getInt("custom-mob-spawner.rates.medium", 7);
+        spawnerRateFast = config.getInt("custom-mob-spawner.rates.fast", 3);
+        spawnerSpawnCount = Math.max(1, config.getInt("custom-mob-spawner.spawn-count", 1));
+        spawnerMaxNearbyMobs = Math.max(0, config.getInt("custom-mob-spawner.max-nearby-mobs", 6));
+        spawnerSpawnRange = Math.max(1, config.getInt("custom-mob-spawner.spawn-range", 4));
 
         debug = config.getBoolean("debug", false);
 
@@ -142,6 +162,45 @@ public final class CustomItemsConfig {
 
     public boolean hasMaskSkin() {
         return maskSkinValue != null && !maskSkinValue.isEmpty();
+    }
+
+    public boolean isSpawnerEnabled() {
+        return spawnerEnabled;
+    }
+
+    public String getSpawnerMobType() {
+        return spawnerMobType;
+    }
+
+    public String getSpawnerRateMode() {
+        return spawnerRateMode;
+    }
+
+    public int getSpawnerSpawnCount() {
+        return spawnerSpawnCount;
+    }
+
+    public int getSpawnerMaxNearbyMobs() {
+        return spawnerMaxNearbyMobs;
+    }
+
+    public int getSpawnerSpawnRange() {
+        return spawnerSpawnRange;
+    }
+
+    public int rateForMode(String mode) {
+        if (mode == null) {
+            return spawnerRateMedium;
+        }
+        return switch (mode.toLowerCase()) {
+            case "slow" -> spawnerRateSlow;
+            case "fast" -> spawnerRateFast;
+            default -> spawnerRateMedium;
+        };
+    }
+
+    public int activeRateSeconds() {
+        return Math.max(1, rateForMode(spawnerRateMode));
     }
 
     public boolean isDebug() {

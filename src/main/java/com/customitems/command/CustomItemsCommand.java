@@ -5,6 +5,7 @@ import com.customitems.config.CustomItemsConfig;
 import com.customitems.item.CustomItemRegistry;
 import com.customitems.mask.MaskService;
 import com.customitems.mask.MaskSkinService;
+import com.customitems.spawner.SpawnerCommands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -30,14 +31,16 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
     private final CustomItemRegistry registry;
     private final MaskService maskService;
     private final MaskSkinService maskSkinService;
+    private final SpawnerCommands spawnerCommands;
 
     public CustomItemsCommand(CustomItemsPlugin plugin, CustomItemsConfig config, CustomItemRegistry registry,
-                              MaskService maskService, MaskSkinService maskSkinService) {
+                              MaskService maskService, MaskSkinService maskSkinService, SpawnerCommands spawnerCommands) {
         this.plugin = plugin;
         this.config = config;
         this.registry = registry;
         this.maskService = maskService;
         this.maskSkinService = maskSkinService;
+        this.spawnerCommands = spawnerCommands;
     }
 
     @Override
@@ -54,6 +57,7 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             case "reload" -> handleReload(sender);
             case "maskskin" -> handleMaskSkin(sender, args);
             case "signbook" -> handleSignBook(sender, args);
+            case "spawner" -> spawnerCommands.handle(sender, args);
             default -> sendUsage(sender);
         }
         return true;
@@ -182,14 +186,14 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
     }
 
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload|maskskin|signbook>", NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload|maskskin|signbook|spawner>", NamedTextColor.YELLOW));
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command,
                                       @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            return filter(List.of("version", "give", "reload", "maskskin", "signbook"), args[0]);
+            return filter(List.of("version", "give", "reload", "maskskin", "signbook", "spawner"), args[0]);
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
@@ -198,6 +202,10 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 2 && args[0].equalsIgnoreCase("maskskin")) {
             return filter(List.of("status"), args[1]);
+        }
+
+        if (args[0].equalsIgnoreCase("spawner")) {
+            return spawnerCommands.tabComplete(args);
         }
 
         if (args.length == 3 && args[0].equalsIgnoreCase("give")) {

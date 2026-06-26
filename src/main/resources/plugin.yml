@@ -7,7 +7,7 @@ description: Custom items for Paper servers.
 commands:
   customitems:
     description: CustomItems administration commands.
-    usage: /customitems <version|give|reload|maskskin|signbook>
+    usage: /customitems <version|give|reload|maskskin|signbook|spawner>
     aliases: [ci]
 permissions:
   customitems.admin:
@@ -17,6 +17,7 @@ permissions:
       customitems.give: true
       customitems.reload: true
       customitems.signbook: true
+      customitems.spawner.admin: true
   customitems.give:
     description: Allows giving custom items.
     default: op
@@ -25,4 +26,7 @@ permissions:
     default: op
   customitems.signbook:
     description: Allows signing a CustomSigningBook with a custom author.
+    default: op
+  customitems.spawner.admin:
+    description: Allows managing custom mob spawners.
     default: op
