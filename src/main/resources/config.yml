@@ -40,6 +40,25 @@ max-health:
   enabled: false
   rows: 5
 
+enchant-control:
+  enabled: true
+  blocked-combining:
+    - protection
+    - sharpness
+    - power
+  table-capped:
+    protection:
+      max-level: 1
+      require-level: 30
+    sharpness:
+      max-level: 1
+      require-level: 30
+    power:
+      max-level: 1
+      require-level: 30
+  messages:
+    blocked-combine: "&cThat enchantment cannot be combined."
+
 messages:
   no-permission: "&cYou do not have permission."
   given: "&aGave {item} to {player}."

@@ -8,6 +8,9 @@ import com.customitems.containment.ContainmentManager;
 import com.customitems.containment.ContainmentWand;
 import com.customitems.containment.SelectionService;
 import com.customitems.crown.CrownService;
+import com.customitems.enchant.EnchantCommands;
+import com.customitems.enchant.EnchantControlListener;
+import com.customitems.enchant.EnchantControlManager;
 import com.customitems.health.HealthListener;
 import com.customitems.health.MaxHealthService;
 import com.customitems.item.CrownItem;
@@ -45,6 +48,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
     private SmelterRecipe smelterRecipe;
     private MaxHealthService maxHealthService;
     private ContainmentManager containmentManager;
+    private EnchantControlManager enchantControlManager;
     private BukkitTask syncTask;
 
     @Override
@@ -77,7 +81,11 @@ public final class CustomItemsPlugin extends JavaPlugin {
         ContainmentWand containmentWand = new ContainmentWand(keys);
         ContainmentCommands containmentCommands = new ContainmentCommands(config, containmentManager, selectionService, containmentWand);
 
-        CustomItemsCommand command = new CustomItemsCommand(this, config, registry, maskService, maskSkinService, spawnerCommands, maxHealthService, containmentCommands);
+        enchantControlManager = new EnchantControlManager(this);
+        enchantControlManager.load();
+        EnchantCommands enchantCommands = new EnchantCommands(config, enchantControlManager);
+
+        CustomItemsCommand command = new CustomItemsCommand(this, config, registry, maskService, maskSkinService, spawnerCommands, maxHealthService, containmentCommands, enchantCommands);
         Objects.requireNonNull(getCommand("customitems")).setExecutor(command);
         Objects.requireNonNull(getCommand("customitems")).setTabCompleter(command);
 
@@ -97,6 +105,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new HealthListener(maxHealthService), this);
         getServer().getPluginManager().registerEvents(
                 new ContainmentListener(containmentManager, selectionService, containmentWand, keys, config), this);
+        getServer().getPluginManager().registerEvents(new EnchantControlListener(enchantControlManager), this);
         applyMaxHealthToAll();
 
         startSyncTask();
@@ -136,6 +145,9 @@ public final class CustomItemsPlugin extends JavaPlugin {
         }
         if (containmentManager != null) {
             containmentManager.load();
+        }
+        if (enchantControlManager != null) {
+            enchantControlManager.load();
         }
         for (Player player : getServer().getOnlinePlayers()) {
             crownService.reset(player);
