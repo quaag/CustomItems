@@ -24,6 +24,10 @@ public final class ItemKeys {
         return new NamespacedKey(plugin, id);
     }
 
+    public NamespacedKey namespaced(String id) {
+        return new NamespacedKey(plugin, id);
+    }
+
     public void writeId(ItemMeta meta, String id) {
         meta.getPersistentDataContainer().set(customItemId, PersistentDataType.STRING, id);
     }
