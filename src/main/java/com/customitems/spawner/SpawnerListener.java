@@ -34,7 +34,7 @@ public final class SpawnerListener implements Listener {
         }
 
         Block block = event.getBlockPlaced();
-        manager.track(block);
+        manager.create(block);
 
         BlockState state = block.getState();
         if (state instanceof CreatureSpawner spawner) {

@@ -75,14 +75,14 @@ public final class CustomItemsConfig {
         maskSkinSignature = config.getString("mask.skin.signature", "");
 
         spawnerEnabled = config.getBoolean("custom-mob-spawner.enabled", true);
-        spawnerMobType = config.getString("custom-mob-spawner.mob-type", "ZOMBIE");
-        spawnerRateMode = config.getString("custom-mob-spawner.rate", "medium");
-        spawnerRateSlow = config.getInt("custom-mob-spawner.rates.slow", 15);
-        spawnerRateMedium = config.getInt("custom-mob-spawner.rates.medium", 7);
-        spawnerRateFast = config.getInt("custom-mob-spawner.rates.fast", 3);
-        spawnerSpawnCount = Math.max(1, config.getInt("custom-mob-spawner.spawn-count", 1));
-        spawnerMaxNearbyMobs = Math.max(0, config.getInt("custom-mob-spawner.max-nearby-mobs", 6));
-        spawnerSpawnRange = Math.max(1, config.getInt("custom-mob-spawner.spawn-range", 4));
+        spawnerMobType = config.getString("custom-mob-spawner.defaults.mob-type", "ZOMBIE");
+        spawnerRateMode = config.getString("custom-mob-spawner.defaults.rate", "medium");
+        spawnerRateSlow = config.getInt("custom-mob-spawner.defaults.rates.slow", 15);
+        spawnerRateMedium = config.getInt("custom-mob-spawner.defaults.rates.medium", 7);
+        spawnerRateFast = config.getInt("custom-mob-spawner.defaults.rates.fast", 3);
+        spawnerSpawnCount = Math.max(1, config.getInt("custom-mob-spawner.defaults.spawn-count", 1));
+        spawnerMaxNearbyMobs = Math.max(0, config.getInt("custom-mob-spawner.defaults.max-nearby-mobs", 6));
+        spawnerSpawnRange = Math.max(1, config.getInt("custom-mob-spawner.defaults.spawn-range", 4));
 
         debug = config.getBoolean("debug", false);
 
@@ -168,39 +168,36 @@ public final class CustomItemsConfig {
         return spawnerEnabled;
     }
 
-    public String getSpawnerMobType() {
+    public String getDefaultMobType() {
         return spawnerMobType;
     }
 
-    public String getSpawnerRateMode() {
+    public String getDefaultRateMode() {
         return spawnerRateMode;
     }
 
-    public int getSpawnerSpawnCount() {
+    public int getDefaultRateSlow() {
+        return spawnerRateSlow;
+    }
+
+    public int getDefaultRateMedium() {
+        return spawnerRateMedium;
+    }
+
+    public int getDefaultRateFast() {
+        return spawnerRateFast;
+    }
+
+    public int getDefaultSpawnCount() {
         return spawnerSpawnCount;
     }
 
-    public int getSpawnerMaxNearbyMobs() {
+    public int getDefaultMaxNearbyMobs() {
         return spawnerMaxNearbyMobs;
     }
 
-    public int getSpawnerSpawnRange() {
+    public int getDefaultSpawnRange() {
         return spawnerSpawnRange;
-    }
-
-    public int rateForMode(String mode) {
-        if (mode == null) {
-            return spawnerRateMedium;
-        }
-        return switch (mode.toLowerCase()) {
-            case "slow" -> spawnerRateSlow;
-            case "fast" -> spawnerRateFast;
-            default -> spawnerRateMedium;
-        };
-    }
-
-    public int activeRateSeconds() {
-        return Math.max(1, rateForMode(spawnerRateMode));
     }
 
     public boolean isDebug() {

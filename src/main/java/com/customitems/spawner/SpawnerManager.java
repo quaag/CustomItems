@@ -25,10 +25,9 @@ public final class SpawnerManager {
     private final Plugin plugin;
     private final CustomItemsConfig config;
     private final SpawnerStore store;
-    private final Map<String, SpawnerLocation> tracked = new LinkedHashMap<>();
+    private final Map<String, SpawnerData> tracked = new LinkedHashMap<>();
 
     private BukkitTask task;
-    private int secondsElapsed;
 
     public SpawnerManager(Plugin plugin, CustomItemsConfig config, SpawnerStore store) {
         this.plugin = plugin;
@@ -51,20 +50,28 @@ public final class SpawnerManager {
 
     public void load() {
         tracked.clear();
-        for (SpawnerLocation location : store.load()) {
-            tracked.put(location.key(), location);
+        for (SpawnerData data : store.load(config)) {
+            tracked.put(data.key(), data);
         }
     }
 
     public void reload() {
         load();
-        secondsElapsed = 0;
     }
 
-    public void track(Block block) {
-        SpawnerLocation location = SpawnerLocation.of(block);
-        tracked.put(location.key(), location);
+    public void save() {
         store.save(tracked.values());
+    }
+
+    public SpawnerData create(Block block) {
+        SpawnerData data = store.withDefaults(SpawnerLocation.of(block), config);
+        tracked.put(data.key(), data);
+        store.save(tracked.values());
+        return data;
+    }
+
+    public SpawnerData get(Block block) {
+        return tracked.get(SpawnerLocation.of(block).key());
     }
 
     public boolean isTracked(Block block) {
@@ -79,7 +86,7 @@ public final class SpawnerManager {
         return removed;
     }
 
-    public Collection<SpawnerLocation> all() {
+    public Collection<SpawnerData> all() {
         return tracked.values();
     }
 
@@ -92,48 +99,47 @@ public final class SpawnerManager {
             return;
         }
 
-        secondsElapsed++;
-        if (secondsElapsed < config.activeRateSeconds()) {
-            return;
-        }
-        secondsElapsed = 0;
-
-        EntityType type = resolveType(config.getSpawnerMobType());
-        if (type == null) {
-            return;
-        }
-
-        for (SpawnerLocation location : List.copyOf(tracked.values())) {
-            attemptSpawn(location, type);
+        for (SpawnerData data : List.copyOf(tracked.values())) {
+            data.incrementSecond();
+            if (data.getSecondsElapsed() < data.activeRateSeconds()) {
+                continue;
+            }
+            data.resetSeconds();
+            attemptSpawn(data);
         }
     }
 
-    private void attemptSpawn(SpawnerLocation location, EntityType type) {
-        World world = location.resolveWorld();
+    private void attemptSpawn(SpawnerData data) {
+        World world = data.resolveWorld();
         if (world == null) {
             return;
         }
+        SpawnerLocation location = data.location();
         if (!world.isChunkLoaded(location.x() >> 4, location.z() >> 4)) {
             return;
         }
 
         Block block = world.getBlockAt(location.x(), location.y(), location.z());
         if (block.getType() != Material.SPAWNER) {
-            tracked.remove(location.key());
+            tracked.remove(data.key());
             store.save(tracked.values());
             return;
         }
 
-        Location center = location.center();
-        int range = config.getSpawnerSpawnRange();
-        long nearby = world.getNearbyEntities(center, range, range, range).stream()
-                .filter(entity -> entity.getType() == type)
-                .count();
-        if (nearby >= config.getSpawnerMaxNearbyMobs()) {
+        EntityType type = resolveType(data.getMobType());
+        if (type == null) {
             return;
         }
 
-        for (int i = 0; i < config.getSpawnerSpawnCount(); i++) {
+        int range = data.getSpawnRange();
+        long nearby = world.getNearbyEntities(data.center(), range, range, range).stream()
+                .filter(entity -> entity.getType() == type)
+                .count();
+        if (nearby >= data.getMaxNearbyMobs()) {
+            return;
+        }
+
+        for (int i = 0; i < data.getSpawnCount(); i++) {
             Location target = findSpawnLocation(block, range);
             if (target != null) {
                 world.spawnEntity(target, type);
@@ -159,7 +165,7 @@ public final class SpawnerManager {
         return null;
     }
 
-    private EntityType resolveType(String raw) {
+    public static EntityType resolveType(String raw) {
         if (raw == null) {
             return null;
         }

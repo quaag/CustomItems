@@ -22,15 +22,16 @@ mask:
 
 custom-mob-spawner:
   enabled: true
-  mob-type: ZOMBIE
-  rate: medium
-  rates:
-    slow: 15
-    medium: 7
-    fast: 3
-  spawn-count: 1
-  max-nearby-mobs: 6
-  spawn-range: 4
+  defaults:
+    mob-type: ZOMBIE
+    rate: medium
+    rates:
+      slow: 15
+      medium: 7
+      fast: 3
+    spawn-count: 1
+    max-nearby-mobs: 6
+    spawn-range: 4
 
 messages:
   no-permission: "&cYou do not have permission."
