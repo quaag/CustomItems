@@ -11,14 +11,17 @@ public final class CustomItemRegistry {
     private final SigningBookItem signingBookItem;
     private final SpawnerItem spawnerItem;
     private final SmeltersPickaxeItem smeltersPickaxeItem;
+    private final SculkweaversShellItem sculkweaversShellItem;
 
     public CustomItemRegistry(CrownItem crownItem, MaskItem maskItem, SigningBookItem signingBookItem,
-                              SpawnerItem spawnerItem, SmeltersPickaxeItem smeltersPickaxeItem) {
+                              SpawnerItem spawnerItem, SmeltersPickaxeItem smeltersPickaxeItem,
+                              SculkweaversShellItem sculkweaversShellItem) {
         this.crownItem = crownItem;
         this.maskItem = maskItem;
         this.signingBookItem = signingBookItem;
         this.spawnerItem = spawnerItem;
         this.smeltersPickaxeItem = smeltersPickaxeItem;
+        this.sculkweaversShellItem = sculkweaversShellItem;
     }
 
     public CrownItem crown() {
@@ -41,8 +44,13 @@ public final class CustomItemRegistry {
         return smeltersPickaxeItem;
     }
 
+    public SculkweaversShellItem sculkweaversShell() {
+        return sculkweaversShellItem;
+    }
+
     public List<String> ids() {
-        return List.of(CrownItem.ID, MaskItem.ID, SigningBookItem.ID, SpawnerItem.ID, SmeltersPickaxeItem.ID);
+        return List.of(CrownItem.ID, MaskItem.ID, SigningBookItem.ID, SpawnerItem.ID,
+                SmeltersPickaxeItem.ID, SculkweaversShellItem.ID);
     }
 
     public ItemStack create(String id) {
@@ -60,6 +68,9 @@ public final class CustomItemRegistry {
         }
         if (SmeltersPickaxeItem.ID.equalsIgnoreCase(id)) {
             return smeltersPickaxeItem.create();
+        }
+        if (SculkweaversShellItem.ID.equalsIgnoreCase(id)) {
+            return sculkweaversShellItem.create();
         }
         return null;
     }
@@ -79,6 +90,9 @@ public final class CustomItemRegistry {
         }
         if (SmeltersPickaxeItem.ID.equalsIgnoreCase(id)) {
             return SmeltersPickaxeItem.DISPLAY_NAME;
+        }
+        if (SculkweaversShellItem.ID.equalsIgnoreCase(id)) {
+            return SculkweaversShellItem.DISPLAY_NAME;
         }
         return id;
     }

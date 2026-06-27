@@ -14,6 +14,7 @@ import com.customitems.item.CrownItem;
 import com.customitems.item.CustomItemRegistry;
 import com.customitems.item.ItemKeys;
 import com.customitems.item.MaskItem;
+import com.customitems.item.SculkweaversShellItem;
 import com.customitems.item.SigningBookItem;
 import com.customitems.item.SmeltersPickaxeItem;
 import com.customitems.item.SpawnerItem;
@@ -57,7 +58,8 @@ public final class CustomItemsPlugin extends JavaPlugin {
         SigningBookItem signingBookItem = new SigningBookItem(keys);
         SpawnerItem spawnerItem = new SpawnerItem(keys);
         SmeltersPickaxeItem smeltersPickaxeItem = new SmeltersPickaxeItem(keys);
-        CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem, signingBookItem, spawnerItem, smeltersPickaxeItem);
+        SculkweaversShellItem sculkweaversShellItem = new SculkweaversShellItem(keys);
+        CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem, signingBookItem, spawnerItem, smeltersPickaxeItem, sculkweaversShellItem);
 
         crownService = new CrownService(this, config, crownItem);
         MaskSkinService maskSkinService = new MaskSkinService(this, config);
