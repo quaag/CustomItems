@@ -49,6 +49,7 @@ public final class CustomItemsConfig {
     private String given;
     private String received;
     private String reloaded;
+    private String containmentBlocked;
 
     public CustomItemsConfig(CustomItemsPlugin plugin) {
         this.plugin = plugin;
@@ -100,6 +101,8 @@ public final class CustomItemsConfig {
         given = config.getString("messages.given", "&aGave {item} to {player}.");
         received = config.getString("messages.received", "&aYou received {item}.");
         reloaded = config.getString("messages.reloaded", "&aCustomItems reloaded.");
+        containmentBlocked = config.getString("messages.containment-blocked",
+                "&cYou cannot leave this area while carrying that item.");
     }
 
     public boolean isCrownEnabled() {
@@ -240,6 +243,10 @@ public final class CustomItemsConfig {
 
     public Component reloadedMessage() {
         return color(reloaded);
+    }
+
+    public Component containmentBlockedMessage() {
+        return color(containmentBlocked);
     }
 
     private Component color(String raw) {

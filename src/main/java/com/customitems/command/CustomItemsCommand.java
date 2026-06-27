@@ -2,6 +2,7 @@ package com.customitems.command;
 
 import com.customitems.CustomItemsPlugin;
 import com.customitems.config.CustomItemsConfig;
+import com.customitems.containment.ContainmentCommands;
 import com.customitems.health.MaxHealthService;
 import com.customitems.item.CustomItemRegistry;
 import com.customitems.mask.MaskService;
@@ -34,10 +35,12 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
     private final MaskSkinService maskSkinService;
     private final SpawnerCommands spawnerCommands;
     private final MaxHealthService maxHealthService;
+    private final ContainmentCommands containmentCommands;
 
     public CustomItemsCommand(CustomItemsPlugin plugin, CustomItemsConfig config, CustomItemRegistry registry,
                               MaskService maskService, MaskSkinService maskSkinService,
-                              SpawnerCommands spawnerCommands, MaxHealthService maxHealthService) {
+                              SpawnerCommands spawnerCommands, MaxHealthService maxHealthService,
+                              ContainmentCommands containmentCommands) {
         this.plugin = plugin;
         this.config = config;
         this.registry = registry;
@@ -45,6 +48,7 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
         this.maskSkinService = maskSkinService;
         this.spawnerCommands = spawnerCommands;
         this.maxHealthService = maxHealthService;
+        this.containmentCommands = containmentCommands;
     }
 
     @Override
@@ -63,6 +67,7 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             case "signbook" -> handleSignBook(sender, args);
             case "spawner" -> spawnerCommands.handle(sender, args);
             case "hearts" -> handleHearts(sender, args);
+            case "containment" -> containmentCommands.handle(sender, args);
             default -> sendUsage(sender);
         }
         return true;
@@ -245,14 +250,14 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
     }
 
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload|maskskin|signbook|spawner|hearts>", NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload|maskskin|signbook|spawner|hearts|containment>", NamedTextColor.YELLOW));
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command,
                                       @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            return filter(List.of("version", "give", "reload", "maskskin", "signbook", "spawner", "hearts"), args[0]);
+            return filter(List.of("version", "give", "reload", "maskskin", "signbook", "spawner", "hearts", "containment"), args[0]);
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
@@ -269,6 +274,10 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 2 && args[0].equalsIgnoreCase("hearts")) {
             return filter(List.of("on", "off", "rows", "status"), args[1]);
+        }
+
+        if (args[0].equalsIgnoreCase("containment")) {
+            return containmentCommands.tabComplete(args);
         }
 
         if (args.length == 3 && args[0].equalsIgnoreCase("give")) {

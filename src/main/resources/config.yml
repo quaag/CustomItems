@@ -45,5 +45,6 @@ messages:
   given: "&aGave {item} to {player}."
   received: "&aYou received {item}."
   reloaded: "&aCustomItems reloaded."
+  containment-blocked: "&cYou cannot leave this area while carrying that item."
 
 debug: false

@@ -7,7 +7,7 @@ description: Custom items for Paper servers.
 commands:
   customitems:
     description: CustomItems administration commands.
-    usage: /customitems <version|give|reload|maskskin|signbook|spawner|hearts>
+    usage: /customitems <version|give|reload|maskskin|signbook|spawner|hearts|containment>
     aliases: [ci]
 permissions:
   customitems.admin:
@@ -19,6 +19,7 @@ permissions:
       customitems.signbook: true
       customitems.spawner.admin: true
       customitems.hearts: true
+      customitems.containment.admin: true
   customitems.give:
     description: Allows giving custom items.
     default: op
@@ -33,4 +34,7 @@ permissions:
     default: op
   customitems.hearts:
     description: Allows toggling the server-wide max health feature.
+    default: op
+  customitems.containment.admin:
+    description: Allows managing containment regions.
     default: op
