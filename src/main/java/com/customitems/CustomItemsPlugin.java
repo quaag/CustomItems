@@ -4,16 +4,16 @@ import com.customitems.command.CustomItemsCommand;
 import com.customitems.config.CustomItemsConfig;
 import com.customitems.crown.CrownService;
 import com.customitems.item.CrownItem;
-import com.customitems.head.HeadListener;
-import com.customitems.head.HeadRecipe;
 import com.customitems.item.CustomItemRegistry;
-import com.customitems.item.GoldenHeadItem;
 import com.customitems.item.ItemKeys;
 import com.customitems.item.MaskItem;
-import com.customitems.item.PlayerHeadItem;
 import com.customitems.item.SigningBookItem;
+import com.customitems.item.SmeltersPickaxeItem;
 import com.customitems.item.SpawnerItem;
 import com.customitems.listener.EquipmentListener;
+import com.customitems.smelter.SmelterListener;
+import com.customitems.smelter.SmelterRecipe;
+import com.customitems.smelter.SmeltingIndex;
 import com.customitems.mask.MaskService;
 import com.customitems.mask.MaskSkinService;
 import com.customitems.spawner.SpawnerCommands;
@@ -34,7 +34,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
     private CrownService crownService;
     private MaskService maskService;
     private SpawnerManager spawnerManager;
-    private HeadRecipe headRecipe;
+    private SmelterRecipe smelterRecipe;
     private BukkitTask syncTask;
 
     @Override
@@ -47,9 +47,8 @@ public final class CustomItemsPlugin extends JavaPlugin {
         MaskItem maskItem = new MaskItem(config, keys);
         SigningBookItem signingBookItem = new SigningBookItem(keys);
         SpawnerItem spawnerItem = new SpawnerItem(keys);
-        PlayerHeadItem playerHeadItem = new PlayerHeadItem(keys);
-        GoldenHeadItem goldenHeadItem = new GoldenHeadItem(keys);
-        CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem, signingBookItem, spawnerItem, goldenHeadItem);
+        SmeltersPickaxeItem smeltersPickaxeItem = new SmeltersPickaxeItem(keys);
+        CustomItemRegistry registry = new CustomItemRegistry(crownItem, maskItem, signingBookItem, spawnerItem, smeltersPickaxeItem);
 
         crownService = new CrownService(this, config, crownItem);
         MaskSkinService maskSkinService = new MaskSkinService(this, config);
@@ -67,11 +66,14 @@ public final class CustomItemsPlugin extends JavaPlugin {
                 new EquipmentListener(this, crownService, maskService), this);
         getServer().getPluginManager().registerEvents(
                 new SpawnerListener(spawnerItem, spawnerManager, keys), this);
-        getServer().getPluginManager().registerEvents(
-                new HeadListener(config, playerHeadItem, goldenHeadItem), this);
 
-        headRecipe = new HeadRecipe(this, goldenHeadItem);
-        headRecipe.register();
+        SmeltingIndex smeltingIndex = new SmeltingIndex();
+        smeltingIndex.rebuild();
+        getServer().getPluginManager().registerEvents(
+                new SmelterListener(config, smeltersPickaxeItem, smeltingIndex), this);
+
+        smelterRecipe = new SmelterRecipe(this, smeltersPickaxeItem);
+        smelterRecipe.register();
 
         startSyncTask();
     }
@@ -95,8 +97,8 @@ public final class CustomItemsPlugin extends JavaPlugin {
         if (spawnerManager != null) {
             spawnerManager.shutdown();
         }
-        if (headRecipe != null) {
-            headRecipe.unregister();
+        if (smelterRecipe != null) {
+            smelterRecipe.unregister();
         }
     }
 

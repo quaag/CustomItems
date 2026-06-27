@@ -10,15 +10,15 @@ public final class CustomItemRegistry {
     private final MaskItem maskItem;
     private final SigningBookItem signingBookItem;
     private final SpawnerItem spawnerItem;
-    private final GoldenHeadItem goldenHeadItem;
+    private final SmeltersPickaxeItem smeltersPickaxeItem;
 
     public CustomItemRegistry(CrownItem crownItem, MaskItem maskItem, SigningBookItem signingBookItem,
-                              SpawnerItem spawnerItem, GoldenHeadItem goldenHeadItem) {
+                              SpawnerItem spawnerItem, SmeltersPickaxeItem smeltersPickaxeItem) {
         this.crownItem = crownItem;
         this.maskItem = maskItem;
         this.signingBookItem = signingBookItem;
         this.spawnerItem = spawnerItem;
-        this.goldenHeadItem = goldenHeadItem;
+        this.smeltersPickaxeItem = smeltersPickaxeItem;
     }
 
     public CrownItem crown() {
@@ -37,12 +37,12 @@ public final class CustomItemRegistry {
         return spawnerItem;
     }
 
-    public GoldenHeadItem goldenHead() {
-        return goldenHeadItem;
+    public SmeltersPickaxeItem smeltersPickaxe() {
+        return smeltersPickaxeItem;
     }
 
     public List<String> ids() {
-        return List.of(CrownItem.ID, MaskItem.ID, SigningBookItem.ID, SpawnerItem.ID, GoldenHeadItem.ID);
+        return List.of(CrownItem.ID, MaskItem.ID, SigningBookItem.ID, SpawnerItem.ID, SmeltersPickaxeItem.ID);
     }
 
     public ItemStack create(String id) {
@@ -58,8 +58,8 @@ public final class CustomItemRegistry {
         if (SpawnerItem.ID.equalsIgnoreCase(id)) {
             return spawnerItem.create();
         }
-        if (GoldenHeadItem.ID.equalsIgnoreCase(id)) {
-            return goldenHeadItem.create();
+        if (SmeltersPickaxeItem.ID.equalsIgnoreCase(id)) {
+            return smeltersPickaxeItem.create();
         }
         return null;
     }
@@ -77,8 +77,8 @@ public final class CustomItemRegistry {
         if (SpawnerItem.ID.equalsIgnoreCase(id)) {
             return SpawnerItem.DISPLAY_NAME;
         }
-        if (GoldenHeadItem.ID.equalsIgnoreCase(id)) {
-            return GoldenHeadItem.DISPLAY_NAME;
+        if (SmeltersPickaxeItem.ID.equalsIgnoreCase(id)) {
+            return SmeltersPickaxeItem.DISPLAY_NAME;
         }
         return id;
     }
