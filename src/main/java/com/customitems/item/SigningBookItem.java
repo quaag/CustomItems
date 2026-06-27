@@ -32,6 +32,10 @@ public final class SigningBookItem {
         return item;
     }
 
+    public void writeId(ItemMeta meta) {
+        keys.writeId(meta, ID);
+    }
+
     public boolean isSigningBook(ItemStack item) {
         return item != null && item.getType() == Material.WRITABLE_BOOK && keys.hasId(item, ID);
     }

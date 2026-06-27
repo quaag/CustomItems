@@ -189,6 +189,7 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
         target.pages(source.pages());
         target.author(Component.text(author));
         target.title(source.hasTitle() ? source.title() : Component.text("Custom Signed Book"));
+        registry.signingBook().writeId(target);
         written.setItemMeta(target);
 
         player.getInventory().setItemInMainHand(written);
