@@ -10,13 +10,15 @@ public final class CustomItemRegistry {
     private final MaskItem maskItem;
     private final SigningBookItem signingBookItem;
     private final SpawnerItem spawnerItem;
+    private final GoldenHeadItem goldenHeadItem;
 
-    public CustomItemRegistry(CrownItem crownItem, MaskItem maskItem,
-                              SigningBookItem signingBookItem, SpawnerItem spawnerItem) {
+    public CustomItemRegistry(CrownItem crownItem, MaskItem maskItem, SigningBookItem signingBookItem,
+                              SpawnerItem spawnerItem, GoldenHeadItem goldenHeadItem) {
         this.crownItem = crownItem;
         this.maskItem = maskItem;
         this.signingBookItem = signingBookItem;
         this.spawnerItem = spawnerItem;
+        this.goldenHeadItem = goldenHeadItem;
     }
 
     public CrownItem crown() {
@@ -35,8 +37,12 @@ public final class CustomItemRegistry {
         return spawnerItem;
     }
 
+    public GoldenHeadItem goldenHead() {
+        return goldenHeadItem;
+    }
+
     public List<String> ids() {
-        return List.of(CrownItem.ID, MaskItem.ID, SigningBookItem.ID, SpawnerItem.ID);
+        return List.of(CrownItem.ID, MaskItem.ID, SigningBookItem.ID, SpawnerItem.ID, GoldenHeadItem.ID);
     }
 
     public ItemStack create(String id) {
@@ -51,6 +57,9 @@ public final class CustomItemRegistry {
         }
         if (SpawnerItem.ID.equalsIgnoreCase(id)) {
             return spawnerItem.create();
+        }
+        if (GoldenHeadItem.ID.equalsIgnoreCase(id)) {
+            return goldenHeadItem.create();
         }
         return null;
     }
@@ -67,6 +76,9 @@ public final class CustomItemRegistry {
         }
         if (SpawnerItem.ID.equalsIgnoreCase(id)) {
             return SpawnerItem.DISPLAY_NAME;
+        }
+        if (GoldenHeadItem.ID.equalsIgnoreCase(id)) {
+            return GoldenHeadItem.DISPLAY_NAME;
         }
         return id;
     }

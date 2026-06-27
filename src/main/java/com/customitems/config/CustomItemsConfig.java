@@ -38,6 +38,17 @@ public final class CustomItemsConfig {
     private int spawnerMaxNearbyMobs;
     private int spawnerSpawnRange;
 
+    private boolean headsEnabled;
+    private boolean playerHeadDropOnKill;
+    private int playerHeadCooldown;
+    private int playerHeadRegenAmplifier;
+    private int playerHeadDuration;
+    private int goldenHeadCooldown;
+    private int goldenHeadRegenAmplifier;
+    private int goldenHeadAbsorptionAmplifier;
+    private int goldenHeadSpeedAmplifier;
+    private int goldenHeadDuration;
+
     private boolean debug;
 
     private String noPermission;
@@ -83,6 +94,17 @@ public final class CustomItemsConfig {
         spawnerSpawnCount = Math.max(1, config.getInt("custom-mob-spawner.defaults.spawn-count", 1));
         spawnerMaxNearbyMobs = Math.max(0, config.getInt("custom-mob-spawner.defaults.max-nearby-mobs", 6));
         spawnerSpawnRange = Math.max(1, config.getInt("custom-mob-spawner.defaults.spawn-range", 4));
+
+        headsEnabled = config.getBoolean("heads.enabled", true);
+        playerHeadDropOnKill = config.getBoolean("heads.player-head.drop-on-player-kill", true);
+        playerHeadCooldown = Math.max(0, config.getInt("heads.player-head.cooldown-seconds", 10));
+        playerHeadRegenAmplifier = Math.max(0, config.getInt("heads.player-head.regen-amplifier", 1));
+        playerHeadDuration = Math.max(1, config.getInt("heads.player-head.duration-seconds", 5));
+        goldenHeadCooldown = Math.max(0, config.getInt("heads.golden-head.cooldown-seconds", 20));
+        goldenHeadRegenAmplifier = Math.max(0, config.getInt("heads.golden-head.regen-amplifier", 2));
+        goldenHeadAbsorptionAmplifier = Math.max(0, config.getInt("heads.golden-head.absorption-amplifier", 1));
+        goldenHeadSpeedAmplifier = Math.max(0, config.getInt("heads.golden-head.speed-amplifier", 1));
+        goldenHeadDuration = Math.max(1, config.getInt("heads.golden-head.duration-seconds", 5));
 
         debug = config.getBoolean("debug", false);
 
@@ -198,6 +220,46 @@ public final class CustomItemsConfig {
 
     public int getDefaultSpawnRange() {
         return spawnerSpawnRange;
+    }
+
+    public boolean isHeadsEnabled() {
+        return headsEnabled;
+    }
+
+    public boolean isPlayerHeadDropOnKill() {
+        return playerHeadDropOnKill;
+    }
+
+    public int getPlayerHeadCooldown() {
+        return playerHeadCooldown;
+    }
+
+    public int getPlayerHeadRegenAmplifier() {
+        return playerHeadRegenAmplifier;
+    }
+
+    public int getPlayerHeadDuration() {
+        return playerHeadDuration;
+    }
+
+    public int getGoldenHeadCooldown() {
+        return goldenHeadCooldown;
+    }
+
+    public int getGoldenHeadRegenAmplifier() {
+        return goldenHeadRegenAmplifier;
+    }
+
+    public int getGoldenHeadAbsorptionAmplifier() {
+        return goldenHeadAbsorptionAmplifier;
+    }
+
+    public int getGoldenHeadSpeedAmplifier() {
+        return goldenHeadSpeedAmplifier;
+    }
+
+    public int getGoldenHeadDuration() {
+        return goldenHeadDuration;
     }
 
     public boolean isDebug() {

@@ -33,6 +33,20 @@ custom-mob-spawner:
     max-nearby-mobs: 6
     spawn-range: 4
 
+heads:
+  enabled: true
+  player-head:
+    drop-on-player-kill: true
+    cooldown-seconds: 10
+    regen-amplifier: 1
+    duration-seconds: 5
+  golden-head:
+    cooldown-seconds: 20
+    regen-amplifier: 2
+    absorption-amplifier: 1
+    speed-amplifier: 1
+    duration-seconds: 5
+
 messages:
   no-permission: "&cYou do not have permission."
   given: "&aGave {item} to {player}."
