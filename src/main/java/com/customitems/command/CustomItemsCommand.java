@@ -2,6 +2,7 @@ package com.customitems.command;
 
 import com.customitems.CustomItemsPlugin;
 import com.customitems.config.CustomItemsConfig;
+import com.customitems.health.MaxHealthService;
 import com.customitems.item.CustomItemRegistry;
 import com.customitems.mask.MaskService;
 import com.customitems.mask.MaskSkinService;
@@ -32,15 +33,18 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
     private final MaskService maskService;
     private final MaskSkinService maskSkinService;
     private final SpawnerCommands spawnerCommands;
+    private final MaxHealthService maxHealthService;
 
     public CustomItemsCommand(CustomItemsPlugin plugin, CustomItemsConfig config, CustomItemRegistry registry,
-                              MaskService maskService, MaskSkinService maskSkinService, SpawnerCommands spawnerCommands) {
+                              MaskService maskService, MaskSkinService maskSkinService,
+                              SpawnerCommands spawnerCommands, MaxHealthService maxHealthService) {
         this.plugin = plugin;
         this.config = config;
         this.registry = registry;
         this.maskService = maskService;
         this.maskSkinService = maskSkinService;
         this.spawnerCommands = spawnerCommands;
+        this.maxHealthService = maxHealthService;
     }
 
     @Override
@@ -58,6 +62,7 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             case "maskskin" -> handleMaskSkin(sender, args);
             case "signbook" -> handleSignBook(sender, args);
             case "spawner" -> spawnerCommands.handle(sender, args);
+            case "hearts" -> handleHearts(sender, args);
             default -> sendUsage(sender);
         }
         return true;
@@ -185,15 +190,69 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(Component.text("Signed book as " + author + ".", NamedTextColor.GREEN));
     }
 
+    private void handleHearts(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("customitems.hearts")) {
+            sender.sendMessage(config.noPermissionMessage());
+            return;
+        }
+        if (args.length < 2) {
+            sender.sendMessage(Component.text("Usage: /customitems hearts <on|off|rows|status>", NamedTextColor.RED));
+            return;
+        }
+
+        switch (args[1].toLowerCase()) {
+            case "on" -> setHearts(sender, true);
+            case "off" -> setHearts(sender, false);
+            case "status" -> sender.sendMessage(Component.text("Server hearts: "
+                    + (config.isMaxHealthEnabled() ? "on" : "off") + " | rows: " + config.getMaxHealthRows()
+                    + (config.isMaxHealthEnabled() ? "" : " (1 while off)"), NamedTextColor.GOLD));
+            case "rows" -> setRows(sender, args);
+            default -> sender.sendMessage(Component.text("Usage: /customitems hearts <on|off|rows|status>", NamedTextColor.RED));
+        }
+    }
+
+    private void setHearts(CommandSender sender, boolean enabled) {
+        plugin.getConfig().set("max-health.enabled", enabled);
+        plugin.saveConfig();
+        config.load();
+        plugin.applyMaxHealthToAll();
+        sender.sendMessage(Component.text("Server hearts " + (enabled ? "enabled (" + config.getMaxHealthRows()
+                + " rows)." : "disabled (1 row)."), NamedTextColor.GREEN));
+    }
+
+    private void setRows(CommandSender sender, String[] args) {
+        if (args.length < 3) {
+            sender.sendMessage(Component.text("Usage: /customitems hearts rows <amount>", NamedTextColor.RED));
+            return;
+        }
+        int rows;
+        try {
+            rows = Integer.parseInt(args[2]);
+        } catch (NumberFormatException ex) {
+            sender.sendMessage(Component.text("Rows must be a whole number of 1 or more.", NamedTextColor.RED));
+            return;
+        }
+        if (rows < 1) {
+            sender.sendMessage(Component.text("Rows must be a whole number of 1 or more.", NamedTextColor.RED));
+            return;
+        }
+
+        plugin.getConfig().set("max-health.rows", rows);
+        plugin.saveConfig();
+        config.load();
+        plugin.applyMaxHealthToAll();
+        sender.sendMessage(Component.text("Server hearts rows set to " + rows + ".", NamedTextColor.GREEN));
+    }
+
     private void sendUsage(CommandSender sender) {
-        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload|maskskin|signbook|spawner>", NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("Usage: /customitems <version|give|reload|maskskin|signbook|spawner|hearts>", NamedTextColor.YELLOW));
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command,
                                       @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            return filter(List.of("version", "give", "reload", "maskskin", "signbook", "spawner"), args[0]);
+            return filter(List.of("version", "give", "reload", "maskskin", "signbook", "spawner", "hearts"), args[0]);
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
@@ -206,6 +265,10 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
 
         if (args[0].equalsIgnoreCase("spawner")) {
             return spawnerCommands.tabComplete(args);
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("hearts")) {
+            return filter(List.of("on", "off", "rows", "status"), args[1]);
         }
 
         if (args.length == 3 && args[0].equalsIgnoreCase("give")) {

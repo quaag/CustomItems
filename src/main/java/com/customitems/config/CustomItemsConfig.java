@@ -40,6 +40,9 @@ public final class CustomItemsConfig {
 
     private boolean smeltersPickaxeEnabled;
 
+    private boolean maxHealthEnabled;
+    private int maxHealthRows;
+
     private boolean debug;
 
     private String noPermission;
@@ -87,6 +90,9 @@ public final class CustomItemsConfig {
         spawnerSpawnRange = Math.max(1, config.getInt("custom-mob-spawner.defaults.spawn-range", 4));
 
         smeltersPickaxeEnabled = config.getBoolean("smelters-pickaxe.enabled", true);
+
+        maxHealthEnabled = config.getBoolean("max-health.enabled", false);
+        maxHealthRows = Math.max(1, config.getInt("max-health.rows", 5));
 
         debug = config.getBoolean("debug", false);
 
@@ -206,6 +212,14 @@ public final class CustomItemsConfig {
 
     public boolean isSmeltersPickaxeEnabled() {
         return smeltersPickaxeEnabled;
+    }
+
+    public boolean isMaxHealthEnabled() {
+        return maxHealthEnabled;
+    }
+
+    public int getMaxHealthRows() {
+        return maxHealthRows;
     }
 
     public boolean isDebug() {

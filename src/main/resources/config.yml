@@ -36,6 +36,10 @@ custom-mob-spawner:
 smelters-pickaxe:
   enabled: true
 
+max-health:
+  enabled: false
+  rows: 5
+
 messages:
   no-permission: "&cYou do not have permission."
   given: "&aGave {item} to {player}."

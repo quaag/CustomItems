@@ -3,6 +3,8 @@ package com.customitems;
 import com.customitems.command.CustomItemsCommand;
 import com.customitems.config.CustomItemsConfig;
 import com.customitems.crown.CrownService;
+import com.customitems.health.HealthListener;
+import com.customitems.health.MaxHealthService;
 import com.customitems.item.CrownItem;
 import com.customitems.item.CustomItemRegistry;
 import com.customitems.item.ItemKeys;
@@ -35,6 +37,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
     private MaskService maskService;
     private SpawnerManager spawnerManager;
     private SmelterRecipe smelterRecipe;
+    private MaxHealthService maxHealthService;
     private BukkitTask syncTask;
 
     @Override
@@ -58,7 +61,9 @@ public final class CustomItemsPlugin extends JavaPlugin {
         spawnerManager.start();
         SpawnerCommands spawnerCommands = new SpawnerCommands(this, config, spawnerManager);
 
-        CustomItemsCommand command = new CustomItemsCommand(this, config, registry, maskService, maskSkinService, spawnerCommands);
+        maxHealthService = new MaxHealthService(this, config);
+
+        CustomItemsCommand command = new CustomItemsCommand(this, config, registry, maskService, maskSkinService, spawnerCommands, maxHealthService);
         Objects.requireNonNull(getCommand("customitems")).setExecutor(command);
         Objects.requireNonNull(getCommand("customitems")).setTabCompleter(command);
 
@@ -74,6 +79,9 @@ public final class CustomItemsPlugin extends JavaPlugin {
 
         smelterRecipe = new SmelterRecipe(this, smeltersPickaxeItem);
         smelterRecipe.register();
+
+        getServer().getPluginManager().registerEvents(new HealthListener(maxHealthService), this);
+        applyMaxHealthToAll();
 
         startSyncTask();
     }
@@ -91,6 +99,9 @@ public final class CustomItemsPlugin extends JavaPlugin {
             }
             if (maskService != null) {
                 maskService.disable(player);
+            }
+            if (maxHealthService != null) {
+                maxHealthService.remove(player);
             }
         }
 
@@ -112,6 +123,13 @@ public final class CustomItemsPlugin extends JavaPlugin {
             maskService.reset(player);
             crownService.sync(player);
             maskService.sync(player);
+            maxHealthService.sync(player);
+        }
+    }
+
+    public void applyMaxHealthToAll() {
+        for (Player player : getServer().getOnlinePlayers()) {
+            maxHealthService.sync(player);
         }
     }
 
@@ -120,6 +138,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
             for (Player player : getServer().getOnlinePlayers()) {
                 crownService.sync(player);
                 maskService.sync(player);
+                maxHealthService.sync(player);
             }
         }, SYNC_PERIOD_TICKS, SYNC_PERIOD_TICKS);
     }
