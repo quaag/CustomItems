@@ -37,6 +37,9 @@ public final class SigningBookItem {
     }
 
     public boolean isSigningBook(ItemStack item) {
-        return item != null && item.getType() == Material.WRITABLE_BOOK && keys.hasId(item, ID);
+        if (item == null || !keys.hasId(item, ID)) {
+            return false;
+        }
+        return item.getType() == Material.WRITABLE_BOOK || item.getType() == Material.WRITTEN_BOOK;
     }
 }
