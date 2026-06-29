@@ -31,6 +31,7 @@ import com.customitems.spawner.SpawnerCommands;
 import com.customitems.spawner.SpawnerListener;
 import com.customitems.spawner.SpawnerManager;
 import com.customitems.spawner.SpawnerStore;
+import com.customitems.villager.VillagerListener;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -106,6 +107,7 @@ public final class CustomItemsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(
                 new ContainmentListener(containmentManager, selectionService, containmentWand, keys, config), this);
         getServer().getPluginManager().registerEvents(new EnchantControlListener(enchantControlManager), this);
+        getServer().getPluginManager().registerEvents(new VillagerListener(config), this);
         applyMaxHealthToAll();
 
         startSyncTask();

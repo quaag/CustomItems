@@ -40,6 +40,11 @@ max-health:
   enabled: false
   rows: 5
 
+villager-control:
+  enabled: true
+  prevent-zombie-villagers: true
+  stop-villager-breeding: true
+
 enchant-control:
   enabled: true
   blocked-combining:

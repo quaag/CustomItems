@@ -1,5 +1,6 @@
 package com.customitems.enchant;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,13 +34,14 @@ public final class EnchantControlListener implements Listener {
         }
 
         ItemStack result = event.getCurrentItem();
+        ItemStack target = anvil.getFirstItem();
         ItemStack sacrifice = anvil.getSecondItem();
         if (result == null || result.getType().isAir() || sacrifice == null) {
             return;
         }
 
         for (Enchantment enchantment : manager.blockedCombining()) {
-            if (hasEnchant(result, enchantment) && hasEnchant(sacrifice, enchantment)) {
+            if (isCombineBlocked(enchantment, result, target, sacrifice)) {
                 event.setCancelled(true);
                 if (event.getWhoClicked() instanceof Player player) {
                     player.sendMessage(manager.blockedCombineMessage());
@@ -47,6 +49,39 @@ public final class EnchantControlListener implements Listener {
                 return;
             }
         }
+    }
+
+    private boolean isCombineBlocked(Enchantment enchantment, ItemStack result, ItemStack target, ItemStack sacrifice) {
+        if (levelOf(result, enchantment) == 0) {
+            return false;
+        }
+        int sacrificeLevel = levelOf(sacrifice, enchantment);
+        if (sacrificeLevel == 0) {
+            return false;
+        }
+        if (isBook(target) && isBook(sacrifice)) {
+            return true;
+        }
+        return sacrificeLevel <= levelOf(target, enchantment);
+    }
+
+    private boolean isBook(ItemStack item) {
+        return item != null && item.getType() == Material.ENCHANTED_BOOK;
+    }
+
+    private int levelOf(ItemStack item, Enchantment enchantment) {
+        if (item == null) {
+            return 0;
+        }
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return 0;
+        }
+        int level = meta.getEnchantLevel(enchantment);
+        if (level == 0 && meta instanceof EnchantmentStorageMeta storage) {
+            level = storage.getStoredEnchantLevel(enchantment);
+        }
+        return level;
     }
 
     @EventHandler
@@ -72,17 +107,4 @@ public final class EnchantControlListener implements Listener {
         }
     }
 
-    private boolean hasEnchant(ItemStack item, Enchantment enchantment) {
-        if (item == null) {
-            return false;
-        }
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            return false;
-        }
-        if (meta.hasEnchant(enchantment)) {
-            return true;
-        }
-        return meta instanceof EnchantmentStorageMeta storage && storage.hasStoredEnchant(enchantment);
-    }
 }

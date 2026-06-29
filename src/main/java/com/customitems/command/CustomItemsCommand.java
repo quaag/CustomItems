@@ -167,17 +167,32 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
             return;
         }
         if (args.length < 2) {
-            player.sendMessage(Component.text("Usage: /customitems signbook <author>", NamedTextColor.RED));
+            player.sendMessage(Component.text("Usage: /customitems signbook <author> [| <title>]", NamedTextColor.RED));
             return;
         }
 
-        String author = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).trim();
+        String joined = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).trim();
+        String author = joined;
+        String title = null;
+        int pipe = joined.indexOf('|');
+        if (pipe >= 0) {
+            author = joined.substring(0, pipe).trim();
+            title = joined.substring(pipe + 1).trim();
+        }
+
         if (author.isEmpty()) {
             player.sendMessage(Component.text("Author name cannot be empty.", NamedTextColor.RED));
             return;
         }
         if (author.length() > 32) {
             player.sendMessage(Component.text("Author name cannot be longer than 32 characters.", NamedTextColor.RED));
+            return;
+        }
+        if (title != null && title.isEmpty()) {
+            title = null;
+        }
+        if (title != null && title.length() > 32) {
+            player.sendMessage(Component.text("Title cannot be longer than 32 characters.", NamedTextColor.RED));
             return;
         }
 
@@ -192,12 +207,18 @@ public final class CustomItemsCommand implements CommandExecutor, TabCompleter {
         BookMeta target = (BookMeta) written.getItemMeta();
         target.pages(source.pages());
         target.author(Component.text(author));
-        target.title(source.hasTitle() ? source.title() : Component.text("Custom Signed Book"));
+        if (title != null) {
+            target.title(Component.text(title));
+        } else {
+            target.title(source.hasTitle() ? source.title() : Component.text("Custom Signed Book"));
+        }
+        target.setGeneration(BookMeta.Generation.ORIGINAL);
         registry.signingBook().writeId(target);
         written.setItemMeta(target);
 
         player.getInventory().setItemInMainHand(written);
-        player.sendMessage(Component.text("Signed book as " + author + ".", NamedTextColor.GREEN));
+        String shownTitle = title != null ? title : (source.hasTitle() ? "kept title" : "Custom Signed Book");
+        player.sendMessage(Component.text("Signed book as " + author + " (title: " + shownTitle + ").", NamedTextColor.GREEN));
     }
 
     private void handleHearts(CommandSender sender, String[] args) {

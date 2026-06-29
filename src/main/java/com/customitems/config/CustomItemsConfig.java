@@ -43,6 +43,10 @@ public final class CustomItemsConfig {
     private boolean maxHealthEnabled;
     private int maxHealthRows;
 
+    private boolean villagerControlEnabled;
+    private boolean preventZombieVillagers;
+    private boolean stopVillagerBreeding;
+
     private boolean debug;
 
     private String noPermission;
@@ -94,6 +98,10 @@ public final class CustomItemsConfig {
 
         maxHealthEnabled = config.getBoolean("max-health.enabled", false);
         maxHealthRows = Math.max(1, config.getInt("max-health.rows", 5));
+
+        villagerControlEnabled = config.getBoolean("villager-control.enabled", true);
+        preventZombieVillagers = config.getBoolean("villager-control.prevent-zombie-villagers", true);
+        stopVillagerBreeding = config.getBoolean("villager-control.stop-villager-breeding", true);
 
         debug = config.getBoolean("debug", false);
 
@@ -223,6 +231,18 @@ public final class CustomItemsConfig {
 
     public int getMaxHealthRows() {
         return maxHealthRows;
+    }
+
+    public boolean isVillagerControlEnabled() {
+        return villagerControlEnabled;
+    }
+
+    public boolean isPreventZombieVillagers() {
+        return preventZombieVillagers;
+    }
+
+    public boolean isStopVillagerBreeding() {
+        return stopVillagerBreeding;
     }
 
     public boolean isDebug() {
